@@ -1,0 +1,37 @@
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#main {
+  padding: 75px 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+#main .videoSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn {
+  margin: 10px auto;
+  background-color: aqua;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  border-color: #333;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  display: none;
+}
+
+#downloadLink {
+  display: none;
+}

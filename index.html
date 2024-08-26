@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <main id="main">
+      <section class="videoSection">
+        <h1>Record Video from Camera</h1>
+        <video id="video" width="640" height="480" autoplay controls></video>
+        <button class="btn" id="captureStart">Start Recording</button>
+        <button class="btn" id="captureStop" onclick="stopRecording()" disabled>
+          Stop Recording
+        </button>
+      </section>
+
+      <section class="videoSection">
+        <h2>Recorded Video:</h2>
+        <video
+          id="recordedVideo"
+          width="640"
+          height="480"
+          controls
+          loop
+          autoplay
+          muted
+        ></video>
+        <a
+          id="downloadLink"
+          href="javascript:void(0)"
+          download="recorded-video.webm"
+          class="btn"
+          >Download Video</a
+        >
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
