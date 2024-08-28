@@ -5,6 +5,7 @@ const stopBtn = document.getElementById("captureStop");
 const recordedVideoElement = document.getElementById("recordedVideo");
 const recordedVideoSection = document.getElementById("recordedVideoSection");
 const downloadLink = document.getElementById("downloadLink");
+const speedElement = document.getElementById("playbackSpeed");
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -40,6 +41,10 @@ startBtn.addEventListener("click", async () => {
     console.error("Error accessing the camera: ", error);
     Alert("Cannot access the camera.");
   }
+});
+
+speedElement.addEventListener("input", (event) => {
+  recordedVideoElement.playbackRate = event.target.value;
 });
 
 const stopRecording = () => {
