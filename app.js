@@ -1,7 +1,9 @@
 const videoElement = document.getElementById("video");
+const videoSection = document.getElementById("videoSection");
 const startBtn = document.getElementById("captureStart");
 const stopBtn = document.getElementById("captureStop");
 const recordedVideoElement = document.getElementById("recordedVideo");
+const recordedVideoSection = document.getElementById("recordedVideoSection");
 const downloadLink = document.getElementById("downloadLink");
 
 let mediaRecorder;
@@ -22,6 +24,15 @@ startBtn.addEventListener("click", async () => {
     // Start recording session
     mediaRecorder.start();
     console.log("Recording...");
+    let timer = 1;
+    const intervalTimer = setInterval(() => {
+      if (timer < 10) {
+        timer += 1;
+      } else {
+        stopRecording();
+        clearInterval(intervalTimer);
+      }
+    }, 1000);
 
     startBtn.disabled = true;
     stopBtn.disabled = false;
@@ -37,6 +48,9 @@ const stopRecording = () => {
 
   startBtn.disabled = false;
   stopBtn.disabled = true;
+  videoSection.style.display = "none";
+  recordedVideoSection.style.display = "flex";
+  downloadLink.style.display = "block";
 };
 
 const handleDataAvailable = (event) => {

@@ -18,6 +18,10 @@
   flex-direction: column;
 }
 
+#main #recordedVideoSection {
+  display: none;
+}
+
 .btn {
   margin: 10px auto;
   background-color: aqua;

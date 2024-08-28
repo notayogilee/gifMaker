@@ -10,7 +10,7 @@
   </head>
   <body>
     <main id="main">
-      <section class="videoSection">
+      <section class="videoSection" id="videoSection">
         <h1>Record Video from Camera</h1>
         <video id="video" width="640" height="480" autoplay controls></video>
         <button class="btn" id="captureStart">Start Recording</button>
@@ -19,7 +19,7 @@
         </button>
       </section>
 
-      <section class="videoSection">
+      <section class="videoSection" id="recordedVideoSection">
         <h2>Recorded Video:</h2>
         <video
           id="recordedVideo"
@@ -30,11 +30,7 @@
           autoplay
           muted
         ></video>
-        <a
-          id="downloadLink"
-          href="javascript:void(0)"
-          download="recorded-video.webm"
-          class="btn"
+        <a id="downloadLink" href="" download="recorded-video.webm" class="btn"
           >Download Video</a
         >
       </section>
