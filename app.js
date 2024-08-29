@@ -6,14 +6,20 @@ const recordedVideoElement = document.getElementById("recordedVideo");
 const recordedVideoSection = document.getElementById("recordedVideoSection");
 const downloadLink = document.getElementById("downloadLink");
 const speedElement = document.getElementById("playbackSpeed");
+const currentSpeedLabel = document.getElementById("currentSpeed");
+
+currentSpeedLabel.innerText = speedElement.value;
 
 let mediaRecorder;
 let recordedChunks = [];
+let videoLength = 0;
+let videoLengthTimer;
+let stream = null;
 
 startBtn.addEventListener("click", async () => {
   try {
     // Request access to the camera
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
     // Assign the stream to the video element's source
     videoElement.srcObject = stream;
 
@@ -25,15 +31,15 @@ startBtn.addEventListener("click", async () => {
     // Start recording session
     mediaRecorder.start();
     console.log("Recording...");
-    let timer = 1;
-    const intervalTimer = setInterval(() => {
-      if (timer < 10) {
-        timer += 1;
+
+    videoLengthTimer = setInterval(() => {
+      // max length of video clip is 10s
+      if (videoLength < 9.9) {
+        videoLength += 0.1;
       } else {
         stopRecording();
-        clearInterval(intervalTimer);
       }
-    }, 1000);
+    }, 100);
 
     startBtn.disabled = true;
     stopBtn.disabled = false;
@@ -45,17 +51,31 @@ startBtn.addEventListener("click", async () => {
 
 speedElement.addEventListener("input", (event) => {
   recordedVideoElement.playbackRate = event.target.value;
+  currentSpeedLabel.innerText = event.target.value;
 });
 
 const stopRecording = () => {
+  clearInterval(videoLengthTimer);
   mediaRecorder.stop();
-  console.log("Stopped recording.");
+  console.log(
+    `Stopped recording. Video length is ${+videoLength.toFixed(1)}s...`
+  );
 
   startBtn.disabled = false;
   stopBtn.disabled = true;
   videoSection.style.display = "none";
   recordedVideoSection.style.display = "flex";
   downloadLink.style.display = "block";
+  stopStream();
+};
+
+// Stop the camera stream
+const stopStream = () => {
+  if (stream) {
+    // Stop all tracks in the stream
+    stream.getTracks().forEach((track) => track.stop());
+    console.log("Stream stopped");
+  }
 };
 
 const handleDataAvailable = (event) => {
@@ -74,5 +94,5 @@ const handleStop = () => {
   const videoURL = URL.createObjectURL(blob);
   recordedVideoElement.src = videoURL;
   downloadLink.href = videoURL;
-  downloadLink.style.display = block;
+  downloadLink.style.display = "block";
 };

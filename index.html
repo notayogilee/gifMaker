@@ -6,20 +6,38 @@
     <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
 
     <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <title>Document</title>
   </head>
   <body>
-    <main id="main">
-      <section class="videoSection" id="videoSection">
+    <main id="main d-flex">
+      <section class="d-flex flex-column align-items-center" id="videoSection">
         <h1>Record Video from Camera</h1>
         <video id="video" width="640" height="480" autoplay controls></video>
-        <button class="btn" id="captureStart">Start Recording</button>
-        <button class="btn" id="captureStop" onclick="stopRecording()" disabled>
-          Stop Recording
-        </button>
+        <div class="d-flex my-3 gap-3">
+          <button class="btn btn-success" id="captureStart">
+            Start Recording
+          </button>
+          <button
+            class="btn btn-danger"
+            id="captureStop"
+            onclick="stopRecording()"
+            disabled
+          >
+            Stop Recording
+          </button>
+        </div>
       </section>
 
-      <section class="videoSection" id="recordedVideoSection">
+      <section
+        class="d-flex flex-column align-items-center"
+        id="recordedVideoSection"
+      >
         <h2>Recorded Video:</h2>
         <video
           id="recordedVideo"
@@ -31,17 +49,33 @@
           muted
         ></video>
         <h2>Video Adjustments</h2>
-        <p>Playback Speed:</p>
-        <input
-          type="range"
-          name="speed"
-          id="playbackSpeed"
-          min="0.5"
-          max="5"
-          value="1"
-          step="0.5"
-        />
-        <a id="downloadLink" href="" download="recorded-video.webm" class="btn"
+        <div class="w-25 d-flex flex-column my-3">
+          <label for="speed"
+            >Playback Speed:<span id="currentSpeed"></span
+          ></label>
+          <input
+            type="range"
+            name="speed"
+            id="playbackSpeed"
+            min="0.5"
+            max="2.5"
+            value="1"
+            step="0.01"
+          />
+          <datalist id="speedMarkers" class="d-flex justify-content-between">
+            <option value="0.5" label="0.5"></option>
+            <option value="1" label="1"></option>
+            <option value="1.5" label="1.5"></option>
+            <option value="2" label="2"></option>
+            <option value="2.5" label="2.5"></option>
+          </datalist>
+        </div>
+
+        <a
+          id="downloadLink"
+          href=""
+          download="recorded-video.webm"
+          class="btn btn-primary mt-2"
           >Download Video</a
         >
       </section>
