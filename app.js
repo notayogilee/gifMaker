@@ -8,17 +8,18 @@ const downloadLink = document.getElementById("downloadLink");
 const speedElement = document.getElementById("playbackSpeed");
 const initialSpeedLabel = document.getElementById("initialSpeed");
 const initialLengthLabel = document.getElementById("initialLength");
-const videoLengthElement = document.getElementById("videoLength");
-const lengthOption2 = document.getElementById("lengthOption2");
-const lengthOption3 = document.getElementById("lengthOption3");
-const lengthOption4 = document.getElementById("lengthOption4");
-const lengthOption5 = document.getElementById("lengthOption5");
+const videoStartElement = document.getElementById("videoStart");
+const videoEndElement = document.getElementById("videoEnd");
 
 initialSpeedLabel.innerText = speedElement.value;
 
 let mediaRecorder;
+let fullVideoURL;
+let videoURL;
 let recordedChunks = [];
 let videoLength = 0;
+let videoStartTime = 0;
+let videoEndTime = videoLength;
 let videoLengthTimer;
 let stream = null;
 
@@ -64,6 +65,26 @@ speedElement.addEventListener("input", (event) => {
   initialSpeedLabel.innerText = event.target.value;
 });
 
+videoStartElement.addEventListener("input", (event) => {
+  videoStartTime = event.target.value;
+  recordedVideoElement.currentTime = videoStartTime;
+});
+
+videoStartElement.addEventListener("mouseup", () => {
+  videoURL = `${fullVideoURL}#t=${videoStartTime},${videoEndTime}`;
+  recordedVideoElement.src = videoURL;
+});
+
+videoEndElement.addEventListener("input", (event) => {
+  videoEndTime = event.target.value;
+  recordedVideoElement.currentTime = videoEndTime;
+});
+
+videoEndElement.addEventListener("mouseup", () => {
+  videoURL = `${fullVideoURL}#t=${videoStartTime},${videoEndTime}`;
+  recordedVideoElement.src = videoURL;
+});
+
 const stopRecording = () => {
   clearInterval(videoLengthTimer);
   mediaRecorder.stop();
@@ -80,11 +101,11 @@ const stopRecording = () => {
   videoLength = +videoLength.toFixed(1);
 
   initialLengthLabel.innerText = `${videoLength} seconds`;
-  videoLengthElement.setAttribute("max", videoLength);
-  videoLengthElement.setAttribute("value", videoLength);
+  videoStartElement.setAttribute("max", videoLength);
+  videoEndElement.setAttribute("max", videoLength);
+  videoEndElement.setAttribute("value", videoLength);
 
   stopStream();
-  setVideoLengthIntervals(videoLength);
 };
 
 // Stop the camera stream
@@ -94,19 +115,6 @@ const stopStream = () => {
     stream.getTracks().forEach((track) => track.stop());
     console.log("Stream stopped");
   }
-};
-
-// Set video length option intervals based on video length
-const setVideoLengthIntervals = (length) => {
-  console.log("set!!", length);
-  lengthOption2.setAttribute("value", +(length * 0.25).toFixed(1));
-  lengthOption2.setAttribute("label", +(length * 0.25).toFixed(1));
-  lengthOption3.setAttribute("value", +(length * 0.5).toFixed(1));
-  lengthOption3.setAttribute("label", +(length * 0.5).toFixed(1));
-  lengthOption4.setAttribute("value", +(length * 0.75).toFixed(1));
-  lengthOption4.setAttribute("label", +(length * 0.75).toFixed(1));
-  lengthOption5.setAttribute("value", length);
-  lengthOption5.setAttribute("label", length);
 };
 
 const handleDataAvailable = (event) => {
@@ -122,8 +130,9 @@ const handleStop = () => {
 
   recordedChunks = [];
 
-  const videoURL = URL.createObjectURL(blob);
-  recordedVideoElement.src = videoURL;
-  downloadLink.href = videoURL;
-  downloadLink.style.display = "block";
+  fullVideoURL = URL.createObjectURL(blob);
+  recordedVideoElement.src = fullVideoURL;
+  videoURL = fullVideoURL;
+  // downloadLink.href = videoURL;
+  // downloadLink.style.display = "block";
 };

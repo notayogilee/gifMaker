@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/gif.js.optimized/dist/gif.js"></script>
 
-    <link rel="stylesheet" href="styles.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -44,11 +44,9 @@
           width="640"
           height="480"
           controls
-          loop
-          autoplay
           muted
         ></video>
-        <h2>Video Adjustments</h2>
+        <h2>Video Adjustments <span id="initialLength"></span></h2>
         <div class="w-25 d-flex flex-column my-3">
           <label for="speed"
             >Playback Speed:<span id="initialSpeed"></span
@@ -71,23 +69,20 @@
           </datalist>
         </div>
         <div class="w-25 d-flex flex-column my-3">
-          <label for="speed"
-            >Video Length:<span id="initialLength"></span
-          ></label>
+          <label for="start">Adjust Start:</label>
           <input
             type="range"
-            name="length"
-            id="videoLength"
-            min="1"
+            name="start"
+            id="videoStart"
+            min="0"
             step="0.1"
+            value="0"
           />
-          <datalist id="lengthMarkers" class="d-flex justify-content-between">
-            <option value="1" label="1"></option>
-            <option id="lengthOption2"></option>
-            <option id="lengthOption3"></option>
-            <option id="lengthOption4"></option>
-            <option id="lengthOption5"></option>
-          </datalist>
+        </div>
+
+        <div class="w-25 d-flex flex-column my-3">
+          <label for="end">Adjust End:</label>
+          <input type="range" name="end" id="videoEnd" step="0.1" />
         </div>
 
         <a
