@@ -6,9 +6,15 @@ const recordedVideoElement = document.getElementById("recordedVideo");
 const recordedVideoSection = document.getElementById("recordedVideoSection");
 const downloadLink = document.getElementById("downloadLink");
 const speedElement = document.getElementById("playbackSpeed");
-const currentSpeedLabel = document.getElementById("currentSpeed");
+const initialSpeedLabel = document.getElementById("initialSpeed");
+const initialLengthLabel = document.getElementById("initialLength");
+const videoLengthElement = document.getElementById("videoLength");
+const lengthOption2 = document.getElementById("lengthOption2");
+const lengthOption3 = document.getElementById("lengthOption3");
+const lengthOption4 = document.getElementById("lengthOption4");
+const lengthOption5 = document.getElementById("lengthOption5");
 
-currentSpeedLabel.innerText = speedElement.value;
+initialSpeedLabel.innerText = speedElement.value;
 
 let mediaRecorder;
 let recordedChunks = [];
@@ -28,6 +34,8 @@ startBtn.addEventListener("click", async () => {
     mediaRecorder.ondataavailable = handleDataAvailable;
     mediaRecorder.onstop = handleStop;
 
+    videoLength = 0;
+
     // Start recording session
     mediaRecorder.start();
     console.log("Recording...");
@@ -42,7 +50,9 @@ startBtn.addEventListener("click", async () => {
     }, 100);
 
     startBtn.disabled = true;
-    stopBtn.disabled = false;
+    setTimeout(() => {
+      stopBtn.disabled = false;
+    }, 1000);
   } catch (error) {
     console.error("Error accessing the camera: ", error);
     Alert("Cannot access the camera.");
@@ -51,7 +61,7 @@ startBtn.addEventListener("click", async () => {
 
 speedElement.addEventListener("input", (event) => {
   recordedVideoElement.playbackRate = event.target.value;
-  currentSpeedLabel.innerText = event.target.value;
+  initialSpeedLabel.innerText = event.target.value;
 });
 
 const stopRecording = () => {
@@ -66,7 +76,15 @@ const stopRecording = () => {
   videoSection.style.display = "none";
   recordedVideoSection.style.display = "flex";
   downloadLink.style.display = "block";
+
+  videoLength = +videoLength.toFixed(1);
+
+  initialLengthLabel.innerText = `${videoLength} seconds`;
+  videoLengthElement.setAttribute("max", videoLength);
+  videoLengthElement.setAttribute("value", videoLength);
+
   stopStream();
+  setVideoLengthIntervals(videoLength);
 };
 
 // Stop the camera stream
@@ -76,6 +94,19 @@ const stopStream = () => {
     stream.getTracks().forEach((track) => track.stop());
     console.log("Stream stopped");
   }
+};
+
+// Set video length option intervals based on video length
+const setVideoLengthIntervals = (length) => {
+  console.log("set!!", length);
+  lengthOption2.setAttribute("value", +(length * 0.25).toFixed(1));
+  lengthOption2.setAttribute("label", +(length * 0.25).toFixed(1));
+  lengthOption3.setAttribute("value", +(length * 0.5).toFixed(1));
+  lengthOption3.setAttribute("label", +(length * 0.5).toFixed(1));
+  lengthOption4.setAttribute("value", +(length * 0.75).toFixed(1));
+  lengthOption4.setAttribute("label", +(length * 0.75).toFixed(1));
+  lengthOption5.setAttribute("value", length);
+  lengthOption5.setAttribute("label", length);
 };
 
 const handleDataAvailable = (event) => {

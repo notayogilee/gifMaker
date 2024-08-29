@@ -51,7 +51,7 @@
         <h2>Video Adjustments</h2>
         <div class="w-25 d-flex flex-column my-3">
           <label for="speed"
-            >Playback Speed:<span id="currentSpeed"></span
+            >Playback Speed:<span id="initialSpeed"></span
           ></label>
           <input
             type="range"
@@ -68,6 +68,25 @@
             <option value="1.5" label="1.5"></option>
             <option value="2" label="2"></option>
             <option value="2.5" label="2.5"></option>
+          </datalist>
+        </div>
+        <div class="w-25 d-flex flex-column my-3">
+          <label for="speed"
+            >Video Length:<span id="initialLength"></span
+          ></label>
+          <input
+            type="range"
+            name="length"
+            id="videoLength"
+            min="1"
+            step="0.1"
+          />
+          <datalist id="lengthMarkers" class="d-flex justify-content-between">
+            <option value="1" label="1"></option>
+            <option id="lengthOption2"></option>
+            <option id="lengthOption3"></option>
+            <option id="lengthOption4"></option>
+            <option id="lengthOption5"></option>
           </datalist>
         </div>
 
