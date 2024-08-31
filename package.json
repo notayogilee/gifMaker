@@ -1,0 +1,15 @@
+{
+  "name": "gifmaker",
+  "version": "1.0.0",
+  "description": "First draft of a custom gif maker. Make gifs from your own videos.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\t\t"
+  },
+  "author": "",
+  "license": "ISC"
+}

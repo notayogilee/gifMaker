@@ -10,6 +10,9 @@ const initialSpeedLabel = document.getElementById("initialSpeed");
 const initialLengthLabel = document.getElementById("initialLength");
 const videoStartElement = document.getElementById("videoStart");
 const videoEndElement = document.getElementById("videoEnd");
+const createGifBtn = document.getElementById("originalVideo");
+const generateNewVideoBtn = document.getElementById("editedVideo");
+const recordedGif = document.getElementById("recordedGif");
 
 initialSpeedLabel.innerText = speedElement.value;
 
@@ -22,6 +25,8 @@ let videoStartTime = 0;
 let videoEndTime = videoLength;
 let videoLengthTimer;
 let stream = null;
+let blob;
+let gif;
 
 startBtn.addEventListener("click", async () => {
   try {
@@ -63,6 +68,7 @@ startBtn.addEventListener("click", async () => {
 speedElement.addEventListener("input", (event) => {
   recordedVideoElement.playbackRate = event.target.value;
   initialSpeedLabel.innerText = event.target.value;
+  hasVideoEdit();
 });
 
 videoStartElement.addEventListener("input", (event) => {
@@ -73,6 +79,7 @@ videoStartElement.addEventListener("input", (event) => {
 videoStartElement.addEventListener("mouseup", () => {
   videoURL = `${fullVideoURL}#t=${videoStartTime},${videoEndTime}`;
   recordedVideoElement.src = videoURL;
+  hasVideoEdit();
 });
 
 videoEndElement.addEventListener("input", (event) => {
@@ -83,6 +90,7 @@ videoEndElement.addEventListener("input", (event) => {
 videoEndElement.addEventListener("mouseup", () => {
   videoURL = `${fullVideoURL}#t=${videoStartTime},${videoEndTime}`;
   recordedVideoElement.src = videoURL;
+  hasVideoEdit();
 });
 
 const stopRecording = () => {
@@ -96,9 +104,10 @@ const stopRecording = () => {
   stopBtn.disabled = true;
   videoSection.style.display = "none";
   recordedVideoSection.style.display = "flex";
-  downloadLink.style.display = "block";
+  // downloadLink.style.display = "block";
 
   videoLength = +videoLength.toFixed(1);
+  videoEndTime = videoLength;
 
   initialLengthLabel.innerText = `${videoLength} seconds`;
   videoStartElement.setAttribute("max", videoLength);
@@ -124,7 +133,7 @@ const handleDataAvailable = (event) => {
 };
 
 const handleStop = () => {
-  const blob = new Blob(recordedChunks, {
+  blob = new Blob(recordedChunks, {
     type: "video/webm",
   });
 
@@ -132,7 +141,82 @@ const handleStop = () => {
 
   fullVideoURL = URL.createObjectURL(blob);
   recordedVideoElement.src = fullVideoURL;
+  recordedVideoElement.muted = true;
   videoURL = fullVideoURL;
+
   // downloadLink.href = videoURL;
   // downloadLink.style.display = "block";
+};
+
+const hasVideoEdit = () => {
+  generateNewVideoBtn.removeAttribute("disabled");
+  createGifBtn.setAttribute("disabled", true);
+};
+
+const generateGif = () => {
+  recordedVideoElement.currentTime = 0;
+
+  // let gifLoading = fetch(
+  //   "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js"
+  // ).then((response) => {
+  //   if (!response.ok) throw new Error("Network response was not OK");
+  //   return response.blob();
+  // });
+
+  const gif = new GIF({
+    workers: 2,
+    quality: 10,
+  });
+
+  console.log(gif);
+
+  const captureFrame = () => {
+    gif.addFrame(recordedVideoElement, { copy: true, delay: 200 });
+    if (recordedVideoElement.currentTime < videoEndTime) {
+      console.log("copy");
+      recordedVideoElement.currentTime += 0.1;
+      requestAnimationFrame(captureFrame);
+    } else {
+      console.log("render");
+      gif.render();
+      const gifURL = URL.createObjectURL(blob);
+      recordedGif.src = gifURL;
+      recordedGif.style.display = "block";
+      downloadLink.href = gifURL;
+      downloadLink.download = "recorded-video.gif";
+      downloadLink.style.display = "block";
+
+      return gif;
+    }
+  };
+  captureFrame();
+
+  function finishGif(blob) {
+    console.log("finished");
+    const gifURL = URL.createObjectURL(blob);
+    recordedGif.src = gifURL;
+    recordedGif.style.display = "block";
+    downloadLink.href = gifURL;
+    downloadLink.download = "recorded-video.gif";
+    downloadLink.style.display = "block";
+    console.log(recordedGif);
+    return gif;
+  }
+
+  gif.on("finished", (blob) => {
+    window.open(URL.createObjectURL(blob));
+    finishGif(blob);
+  });
+
+  // gif.on("finished", (blob) => {
+  //   console.log("finished");
+  //   const gifURL = URL.createObjectURL(blob);
+  //   recordedGif.src = gifURL;
+  //   recordedGif.style.display = "block";
+  //   downloadLink.href = gifURL;
+  //   downloadLink.download = "recorded-video.gif";
+  //   downloadLink.style.display = "block";
+  //   console.log(recordedGif);
+  //   return gif;
+  // });
 };
