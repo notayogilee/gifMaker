@@ -15,7 +15,7 @@
   <body>
     <main id="main" class="d-flex p-5">
       <section
-        class="d-flex flex-column align-items-center w-50"
+        class="d-flex flex-column align-items-center mx-auto"
         id="videoSection"
       >
         <h2>Record Video from Camera</h2>
@@ -46,26 +46,52 @@
       </section>
 
       <section
-        class="d-flex flex-column align-items-center w-50"
+        class="d-none d-flex flex-column align-items-center mx-auto"
         id="recordedVideoSection"
       >
-        <h2>Generated GIF:</h2>
-        <!-- <video
-          id="recordedVideo"
-          width="640"
-          height="480"
-          controls
-          muted
-        ></video> -->
-
+        <h2>Original GIF:</h2>
         <div
           id="recordedGif"
           style="width: 200px; height: 200px; background-color: #333"
         ></div>
 
-        <button class="btn btn-success" id="editGif" onclick="editGif()">
-          Edit GIF
-        </button>
+        <div class="d-flex flex-column my-2">
+          <h3>Enter text and placement or download GIF</h3>
+          <input type="text" id="gifText" />
+
+          <div>
+            <input type="radio" id="top" name="textPlacement" value="top" />
+            <label for="top">Top</label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              id="middle"
+              name="textPlacement"
+              value="middle"
+            />
+            <label for="middle">Middle</label>
+          </div>
+
+          <div>
+            <input
+              type="radio"
+              id="bottom"
+              name="textPlacement"
+              value="bottom"
+            />
+            <label for="bottom">Bottom</label>
+          </div>
+
+          <button class="btn btn-success mt-2" id="editGif" onclick="editGif()">
+            Add Text
+          </button>
+        </div>
+
+        <section id="editedGif">
+          <div id="result"></div>
+        </section>
 
         <a
           id="downloadLink"
@@ -75,8 +101,6 @@
           >Download GIF</a
         >
       </section>
-
-      <div id="editedGif" style="display: none"></div>
     </main>
     <script src="./node_modules/gifshot/dist/gifshot.min.js"></script>
     <script src="app.js"></script>

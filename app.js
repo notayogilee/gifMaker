@@ -1,7 +1,19 @@
 const videoElement = document.getElementById("video");
+const recordSection = document.getElementById("videoSection");
+const originalGifSection = document.getElementById("recordedVideoSection");
 const gifElement = document.getElementById("recordedGif");
 const editedGifElement = document.getElementById("editedGif");
 const downloadLink = document.getElementById("downloadLink");
+const gifText = document.getElementById("gifText");
+
+let savedRenderingContexts = null;
+// let modifiedFrames = null;
+let top = false;
+let middle = false;
+let bottom = false;
+let topHasText = false;
+let middleHasText = false;
+let bottomHasText = false;
 
 const startRecording = async () => {
   // Request access to the camera
@@ -18,7 +30,6 @@ const startRecording = async () => {
       interval: 0.1, // higher increase speed
       frameDuration: 1,
       offset: 100,
-      text: "Lee's GIF!!",
       progressCallback: function (captureProgress) {
         console.log(`progress: ${captureProgress}`);
 
@@ -37,6 +48,14 @@ const startRecording = async () => {
     },
     function (obj) {
       if (!obj.error) {
+        // hide record section
+        recordSection.classList.add("d-none");
+        originalGifSection.classList.remove("d-none");
+
+        // Save the rendering contexts for later use
+        console.log(obj);
+        savedRenderingContexts = obj.savedRenderingContexts;
+
         var image = obj.image,
           animatedImage = document.createElement("img");
         animatedImage.src = image;
@@ -47,7 +66,77 @@ const startRecording = async () => {
   );
 };
 
-const editGif = () => {};
+const editGif = () => {
+  // Get text
+  const text = gifText.value;
+
+  console.log("new gif", savedRenderingContexts);
+
+  if (savedRenderingContexts && text) {
+    let modifiedFrames = savedRenderingContexts.map(function (
+      imageData,
+      index
+    ) {
+      // Create a temporary canvas to draw the ImageData and add text
+      let canvas = document.createElement("canvas");
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+      let context = canvas.getContext("2d");
+
+      // Draw the original ImageData onto the canvas
+      context.putImageData(imageData, 0, 0);
+
+      // Add the text to the frame
+      // context.font = "20px Arial";
+      // context.fillStyle = "red";
+      // context.fillText(text, 10, 30);
+
+      // Return the modified frame as a data URL
+      return canvas.toDataURL();
+    });
+
+    // Re-create the GIF with the modified frames
+    gifshot.createGIF(
+      {
+        gifWidth: 200,
+        gifHeight: 200,
+        saveRenderingContexts: !topHasText || !middleHasText || !bottomHasText, // No need to save contexts again
+        images: modifiedFrames, // Use modified frames
+        text,
+      },
+      function (newObj) {
+        if (!newObj.error) {
+          // Append the modified GIF to the document
+          var finalGif = document.createElement("img");
+          finalGif.src = newObj.image;
+          document.getElementById("result").innerHTML = ""; // Clear previous result
+          document.getElementById("result").appendChild(finalGif);
+        }
+      }
+    );
+  }
+
+  // Create new gif with text
+  // gifshot.createGIF(
+  //   {
+  //     gifWidth: 200,
+  //     gifHeight: 200,
+  //     saveRenderingContexts: false,
+  //     frames: savedRenderingContexts,
+  //     text,
+  //   },
+  //   function (newObj) {
+  //     console.log(newObj);
+  //     if (!newObj.error) {
+  //       // Append the modified GIF to the document
+  //       let finalGif = document.createElement("img");
+  //       finalGif.src = newObj.image;
+  //       // document.getElementById('result').innerHTML = ''; // Clear previous result
+  //       editedGifElement.appendChild(finalGif);
+  //     }
+  //   }
+  // );
+};
 
 const downloadGif = () => {
   const animatedImageElement = document.getElementById("animatedImage");
