@@ -7,15 +7,23 @@ const downloadLink = document.getElementById("downloadLink");
 const gifText = document.getElementById("gifText");
 
 let savedRenderingContexts = null;
-// let modifiedFrames = null;
-let top = false;
-let middle = false;
-let bottom = false;
+let textYinit = false;
+let textYmid = false;
+let textYend = true;
 let topHasText = false;
 let middleHasText = false;
 let bottomHasText = false;
 
+const getTextPlacement = () => {
+  textYinit = document.getElementById("top").checked;
+  textYmid = document.getElementById("middle").checked;
+  textYend = document.getElementById("bottom").checked;
+
+  return textYend ? "bottom" : textYinit ? "top" : "middle";
+};
+
 const startRecording = async () => {
+  console.log("start");
   // Request access to the camera
   stream = await navigator.mediaDevices.getUserMedia({ video: true });
   // Assign the stream to the video element's source
@@ -70,6 +78,9 @@ const editGif = () => {
   // Get text
   const text = gifText.value;
 
+  // Get text position
+  const textPosition = getTextPlacement();
+
   console.log("new gif", savedRenderingContexts);
 
   if (savedRenderingContexts && text) {
@@ -86,10 +97,18 @@ const editGif = () => {
       // Draw the original ImageData onto the canvas
       context.putImageData(imageData, 0, 0);
 
-      // Add the text to the frame
-      // context.font = "20px Arial";
-      // context.fillStyle = "red";
-      // context.fillText(text, 10, 30);
+      console.log(imageData, imageData.width, text.length * 16);
+
+      // Add the text to the frame if middle
+      if (textPosition === "middle") {
+        context.font = "16px Roboto";
+        context.fillStyle = "white";
+        context.fillText(
+          text,
+          (imageData.width - text.length * 6) / 2,
+          (imageData.height - 16) / 2
+        );
+      }
 
       // Return the modified frame as a data URL
       return canvas.toDataURL();
@@ -102,7 +121,8 @@ const editGif = () => {
         gifHeight: 200,
         saveRenderingContexts: !topHasText || !middleHasText || !bottomHasText, // No need to save contexts again
         images: modifiedFrames, // Use modified frames
-        text,
+        text: textPosition === "middle" ? "" : text,
+        textBaseline: textPosition,
       },
       function (newObj) {
         if (!newObj.error) {
@@ -115,27 +135,6 @@ const editGif = () => {
       }
     );
   }
-
-  // Create new gif with text
-  // gifshot.createGIF(
-  //   {
-  //     gifWidth: 200,
-  //     gifHeight: 200,
-  //     saveRenderingContexts: false,
-  //     frames: savedRenderingContexts,
-  //     text,
-  //   },
-  //   function (newObj) {
-  //     console.log(newObj);
-  //     if (!newObj.error) {
-  //       // Append the modified GIF to the document
-  //       let finalGif = document.createElement("img");
-  //       finalGif.src = newObj.image;
-  //       // document.getElementById('result').innerHTML = ''; // Clear previous result
-  //       editedGifElement.appendChild(finalGif);
-  //     }
-  //   }
-  // );
 };
 
 const downloadGif = () => {

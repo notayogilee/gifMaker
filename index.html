@@ -10,6 +10,9 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <script src="
+https://cdn.jsdelivr.net/npm/gifshot-plus@1.0.2/dist/gifshot.min.js
+"></script>
     <title>Document</title>
   </head>
   <body>
@@ -49,15 +52,17 @@
         class="d-none d-flex flex-column align-items-center mx-auto"
         id="recordedVideoSection"
       >
-        <h2>Original GIF:</h2>
+        <h2>Here&apos;s your GIF!</h2>
         <div
           id="recordedGif"
           style="width: 200px; height: 200px; background-color: #333"
         ></div>
 
         <div class="d-flex flex-column my-2">
-          <h3>Enter text and placement or download GIF</h3>
+          <h3>Want to add some text?</h3>
           <input type="text" id="gifText" />
+
+          <h3>Where?</h3>
 
           <div>
             <input type="radio" id="top" name="textPlacement" value="top" />
@@ -80,6 +85,7 @@
               id="bottom"
               name="textPlacement"
               value="bottom"
+              checked
             />
             <label for="bottom">Bottom</label>
           </div>
@@ -102,7 +108,6 @@
         >
       </section>
     </main>
-    <script src="./node_modules/gifshot/dist/gifshot.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
